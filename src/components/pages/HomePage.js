@@ -1,106 +1,114 @@
+/**
+* Project:  JusTeam/client
+*
+* Module name: HomePage component.
+*
+* Author: XU Lu, ZHANG Yuechen
+*
+* Date created: 20180228
+*
+* Purpose: Define The routers on the top bar and component of search bar
+*
+* Revision History:
+*
+* Date      Author          Ref    Revision
+* 20180228  Bob              1     Router Construction.
+* 20180328  Julian           2     Add search bar component and CSS style.
+*
+**/
 import  React,{Component} from 'react'
 import  {Link,Route,Redirect} from 'react-router-dom'
 import {Button,Dropdown,Menu,Icon,Col,Row,Carousel,Card,Avatar,Input,Layout,Affix} from 'antd'
-import logo from '../../logo.svg'
+import {getTeamSearchResult} from "../../services/searchService"
+import './HomePage.css'
 import 'antd/dist/antd.css'
 import NotiPage from "./NotiPage";
-import './HomePage.css'
+import SearchPage from './SearchPage';
 import AccountInfoPage from "./AccountInfoPage";
+import TopBarIcon from '../modules/topBarIcon'
 import Dashboard from './Dashboard'
+import Footer from '../../antdm/Footer';
+import {connect} from "react-redux";
+import jtlogo from  '../../img/log.png'
 
-const {Footer}= Layout;
+const Search = Input.Search;
 
-const menu = (
-    <Menu>
-        <Menu.Item>
-            <Link to='/home/accountInfo'>Account Information</Link>
-        </Menu.Item>
-        <Menu.Item>
-            <Link to='/home/notification'>Notifications</Link>
-        </Menu.Item>
-        <Menu.Item>
-            <Link to='/home/dash/myTeams'>
-                My Teams
-            </Link>
-        </Menu.Item>
-        <Menu.Item>
-            <Link to='/home'>
-                Logout
-            </Link>
-        </Menu.Item>
-    </Menu>
-);
+const mapStateToProps=state=>{
+    return{
+
+    }
+}
+const mapDispatchToProps=dispatch=>{
+    return{
+        setUrlDispatch: fromUrl=>{
+            dispatch({
+                type:"SET_FROMURL",
+                fromUrl:fromUrl,
+            });
+        },
+
+    }
+}
 
 
 class HomePage extends Component{
+  state = {
+    searchResult : undefined
+  }
+  handleSearch=async (value)=>{
+    var result = await getTeamSearchResult(value);
+    console.log("result:");
+    console.log(result.results);
+    this.setState({
+      searchResult: result.results
+    });
+  }
     render(){
+        if(this.state.searchResult) return(
+            <SearchPage searchResult={this.state.searchResult}/>
+        );
         if(this.props.location.pathname==='/home') return<Redirect to='/home/dash'/>;
+        if(this.props.location.pathname==='/home/dash/login') return<Redirect to='/login'/>;
+        this.props.setUrlDispatch(this.props.location.pathname);
         return(
-    <div className="HomePage" >
-    <Affix><div style={{background:'#f50'}}>
+    <div className="HomePage">
+    <Affix><div style={{background:'rgba(26,165,122,0.7)', padding:'10px'}}>
+    <Col span={18}>
         <Link to='/home/dash'>
-            <Button size="large" shape="circle" >
-            Logo
-        </Button>
+        <img src={jtlogo} style={{width: 40, height: 40}} />
         </Link>
+        <Search
+            style={{ width: "70%",height: "120%", marginLeft:'10%'}}
+            placeholder="search for whatever you want!"
+            onSearch={
+              value=>this.handleSearch(value)
 
-        top bar with
-        loginButton
+            }
+            enterButton
+        />
+        </Col>
 
-           <Link to='/login' >
-               <Button type="primary" className="LoginButton">
-                   Login
-               </Button>
-           </Link>
-        , after login:
-        <Dropdown overlay={menu}>
-            <Link to='/home/accountInfo' >
-            <Button shape="circle" gost>
 
-             <img src={logo} alt='UserLogo' height="30" width="30"/>
-            </Button>
-            </Link>
 
-        </Dropdown>
-
+    <span>
+    <Col span={24}/>
+        <TopBarIcon/>
+    </span>
     </div></Affix>
 
-
-        <div style={{ background: '#fff', padding: '26px 0px 0px' }}>
+        <div style={{ background: '#fff', padding: '20px 0px 0px' }}>
             <Route path='/home/accountInfo'  component={AccountInfoPage} />
             <Route path='/home/dash'  component={Dashboard} />
             <Route path='/home/notification'  component={NotiPage} />
         </div>
+      <div>
+      <Footer/>
 
-
-    <div>
-    <Layout>
-            <Footer style={{ background:'#222', color:'#fff',textAlign: 'center' ,  width:'100%'}}>
-            <Col class="FooterCol1" span={8}><h3><b style={{color:"#fff"}}>Contact us</b></h3>
-            <div class="GroupMember" style={{textAlign:"center", padding:"5%", size:"20px", color:"#DDD"}}>
-                <div>JIANG Chenyu</div>
-                <div>DENG Shiyuan</div>
-                <div>WANG Yuxuan</div>
-                <div>XU Lu</div>
-                <div>ZHANG Yuechen</div>
-                </div>
-            </Col>
-              <Col class="FooterCol1" span={8}><h3><b style={{color:"#fff"}}>Contact us</b></h3>
-
-              </Col>
-                <Col class="FooterCol1" span={8}><h3><b style={{color:"#fff"}}>Contact us</b></h3>
-
-                </Col>
-              <Row>
-                <div><br/>CSCI3100 Group23 Justeam <p/>
-                </div>
-              </Row>
-          </Footer>
-        </Layout>
-    </div>
+      </div>
 
     </div>
+
 );
 }
 }
-export  default  HomePage;
+export  default connect(mapStateToProps,mapDispatchToProps)(HomePage);

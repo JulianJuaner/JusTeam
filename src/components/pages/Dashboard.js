@@ -1,9 +1,27 @@
+/**
+* Project:  JusTeam/client
+*
+* Module name: FrontEnd DashBoard
+*
+* Author: XU Lu
+*
+* Date created: 20180301
+*
+* Purpose: The Central Page of JusTeam, Defines routers and frameworks of frontend.
+*
+* Revision History:
+*
+* Date      Author          Ref    Revision
+* 20180301  Bob              1     Construct basic routers
+*
+**/
 import React,{Component} from 'react';
 import MyTeamsPage from "../sections/MyTeamsPage";
 import Discover from '../sections/Discover'
 import Teaming from '../sections/Teaming'
 import  {Link,Route,Redirect} from 'react-router-dom'
 import {Button,Dropdown,Menu,Icon,Col,Row,Carousel,Card,Avatar,Input,Layout,Affix} from 'antd'
+import LogDepButton from '../modules/LogDepButton'
 import 'antd/dist/antd.css'
 import './HomePage.css'
 import AccountInfoPage from "./AccountInfoPage";
@@ -13,32 +31,34 @@ import AccountInfoPage from "./AccountInfoPage";
 
 class Dashboard extends Component {
     render() {
-        if(this.props.location.pathname==='/home/dash') return<Redirect to='/home/dash/teaming'/>;
+        if(this.props.location.pathname==='/home/dash') return<Redirect to='/home/dash/discover'/>;
         return (
             <div>
-                <div>
-            <span>
+                <div style={{marginBottom:'20px'}}>
+                <Row type="flex" justify="space-around" >
+              <Col>
                 <Link to='/home/dash/myTeams'>
-            <Button size="large">
-            myTeams
-        </Button>
+            <LogDepButton text="My Teams" className="hoverbot"/>
                 </Link>
-            </span>
-                    <span>
+            </Col>
+            <Col >
                 <Link to='/home/dash/teaming'>
-            <Button size="large">
+            <Button type="ghost" className="hoverbot">
             Teaming
         </Button>
                 </Link>
-            </span>
-                    <span>
+            </Col>
+            <Col>
                 <Link to='/home/dash/discover'>
-            <Button size="large">
+            <Button type="ghost" className="hoverbot">
             Discover
         </Button>
-                </Link>
-            </span>
+          </Link>
+            </Col>
+            </Row>
+
                 </div>
+                  <hr className= "line" />
                 <div>
                     <Route path='/home/dash/myTeams' component={MyTeamsPage}/>
                     <Route path='/home/dash/teaming' component={Teaming}/>
