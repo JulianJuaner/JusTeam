@@ -1,17 +1,37 @@
+/**
+* Project:  JusTeam/client
+*
+* Module name: FrontEnd DashBoard
+*
+* Author: XU Lu
+*
+* Date created: 20180301
+*
+* Purpose: The Central Page of JusTeam, Defines routers and frameworks of frontend.
+*
+* Revision History:
+*
+* Date      Author          Ref    Revision
+* 20180301  Bob              1     Construct basic routers
+*
+**/
 import React,{Component} from 'react';
-import  {Link,Route,Redirect} from 'react-router-dom'
-import{Button,Col,Row,Divider} from 'antd'
-import './HomePage.css'
 import MyTeamsPage from "../sections/MyTeamsPage";
 import Discover from '../sections/Discover'
 import Teaming from '../sections/Teaming'
+import  {Link,Route,Redirect} from 'react-router-dom'
+import {Button,Dropdown,Menu,Icon,Col,Row,Carousel,Card,Avatar,Input,Layout,Affix} from 'antd'
 import LogDepButton from '../modules/LogDepButton'
-import {logIn} from "../../services/accountService";
+import 'antd/dist/antd.css'
+import './HomePage.css'
+import AccountInfoPage from "./AccountInfoPage";
+
+
 
 
 class Dashboard extends Component {
     render() {
-        if(this.props.location.pathname==='/home/dash') return<Redirect to='/home/dash/teaming'/>;
+        if(this.props.location.pathname==='/home/dash') return<Redirect to='/home/dash/discover'/>;
         return (
             <div>
                 <div style={{marginBottom:'20px'}}>
@@ -44,10 +64,12 @@ class Dashboard extends Component {
                     <Route path='/home/dash/teaming' component={Teaming}/>
                     <Route path='/home/dash/discover' component={Discover}/>
                 </div>
+
+
             </div>
         );
     }
 }
 
 
-export  default Dashboard;
+export  default  Dashboard;

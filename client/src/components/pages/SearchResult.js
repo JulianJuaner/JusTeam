@@ -1,10 +1,27 @@
+/**
+* Project:  JusTeam/client
+*
+* Module name: Search Result Board
+*
+* Author: ZHANG Yuechen, JIANG Chenyu
+*
+* Date created: 20180330
+*
+* Purpose: A List For Display Search Result, with buttons linked to each gingle team.
+*
+* Revision History:
+*
+* Date      Author          Ref    Revision
+* 20180330  Julian           1     Construct a Fake List.
+* 20180402  Julian, Michael  2     Backend Connection issues handled. Button actions handled.
+*
+**/
 import {Icon, Button,Card, Avatar,List,Tag,Col,Divider} from 'antd';
 import React,{Component} from 'react';
 import {getNewNotiNum,getNewNotiList,getNotiHistory,deleteNoti}from '../../services/notiService';
 import {connect} from 'react-redux';
 import './AccountInfoPage.css';
-const number= getNewNotiNum();
-const getNoti=getNewNotiList();
+import Footer from '../../antdm/Footer';
 const fakeresult=[
   {
     key:'1',
@@ -52,7 +69,6 @@ const fakeresult=[
 const pagination = {
  pageSize: 5,
  defaultcurrent: 1,
- total: number,
  onChange: (() => {}),
 
   showSizeChanger:true,
@@ -62,10 +78,15 @@ const pagination = {
 
 //const getNewNotiList
 
+
 class SearchResult extends Component{
+  refresh() {
+      window.location.reload();
+  }
   render(){
   return(
     <div className="background">
+    <Button className="center" type="primary" onClick={this.refresh}>Back</Button>
     <Card className="container">
     <div>
     <List
@@ -73,28 +94,30 @@ class SearchResult extends Component{
       size="large"
       className="infoList1"
 
-      dataSource={fakeresult}
+      dataSource={this.props.searchResult}
       renderItem={item => (
         <Card
           style={{marginTop: "2%", height:"200px"}}
           type="inner"
-          title={<Col span={5}><Tag color="#1DA57A">{item.category}</Tag></Col>}
+          title={<Col span={5}>{item.content.category.replace(/"/g,"").split(" ").slice(1).map
+          (item=><Tag color="#1DA57A">{item}</Tag>)}</Col>}
           extra={<span><Button size="small"> Detail</Button></span>}
         >
         <List.Item
           key={item.key}>
           <List.Item.Meta
           title={<span>
-          {item.teamTitle}</span>}
+          {item.content.teamTitle}</span>}
 
           />
-          {item.introduction}
+          {item.content.introduction}
         </List.Item>
         </Card>
       )}
     />
     </div>
     </Card>
+    <Footer/>
     </div>
     );
   }

@@ -1,3 +1,21 @@
+/**
+* Project:  JusTeam/client
+*
+* Module name: AccountInfo Page
+*
+* Author: ZHANG Yuechen, XU lu
+*
+* Date created: 20180305
+*
+* Purpose: An Account Information Page to show the Account info and edit form.
+*
+* Revision History:
+*
+* Date      Author          Ref    Revision
+* 20180305  Julian           1     Construct a account info list for default value.
+* 20180315  Bob              2     Reconstruct the information data structure.
+*
+**/
 import React,{Component} from 'react';
 import {List, Avatar,Row,Col,Button, Rate,Tabs,Icon,Card} from 'antd';
 import {Link,Redirect} from 'react-router-dom'
@@ -17,7 +35,8 @@ function callback(key) {
 const mapStateToProps= state=>{
     console.log("state fetched:", JSON.stringify(state)) ;
     return{
-        userID: state.userID
+        userID: state.userID,
+        logo:state.logo,
     }
 }
 const mapDispatchToProps= ()=>{
@@ -34,8 +53,8 @@ class AccountInfoPage extends Component {
     if(!userID) return(
         <Redirect to='/home/dash/login'/>
     );
-    data=this.state.data;
-    if(data)
+
+    if(this.state.data)
     return(
         <div>
           <br/>
@@ -45,18 +64,18 @@ class AccountInfoPage extends Component {
                 <TabPane tab="My Info" key="1">
                 <Col className="infospan" >
                     <div>
-                        <Avatar size="large" icon="user">
+                        <Avatar  src={this.props.logo} size="large" icon="user">
                         </Avatar>
                     </div>
                 </Col>
 
                 <Col className="secondspan">
-                    <div><h2 textalign="center">Hello, {data.nickname}</h2>
+                    <div><h2 textalign="center">Hello, {this.state.data.nickname}</h2>
                     </div></Col>
                     <Col className="secondspan" >
                         <div><h3 >Personal Information</h3>
                         </div></Col>
-                <AccountInfoList data={data} />
+                <AccountInfoList data={this.state.data} />
                 <br/>
                 <Col className="infospan"><div>
                     <Link to='/home/dash/myTeams'>
@@ -81,7 +100,9 @@ class AccountInfoPage extends Component {
 }
  componentDidMount(){
         if(this.props.userID)
-     fetchActInfo(this.props.userID).then((response)=>{this.setState({data:response})});
+        fetchActInfo(this.props.userID).then((response)=>{
+            if(response.requestState)
+            this.setState({data:response.result})});
  }
 }
 export  default  connect(mapStateToProps,mapDispatchToProps)(AccountInfoPage);
